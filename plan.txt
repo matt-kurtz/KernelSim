@@ -1,0 +1,15 @@
+How do we start?
+
+Five - state diagram, queue for each. 
+
+Class for the whole kernel simulator?
+
+5 queues - one for each state
+ - New
+ - Ready
+ - Running
+ - Blocked
+ - Exit
+
+Class for Queue
+Struct for Process
