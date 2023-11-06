@@ -12,8 +12,8 @@ class Queue {
         QNodePtr head;
     public:
         Queue() { head = NULL; }
-        void Enqueue(Process &p);
-        Process Dequeue();
+        void Enqueue(ProcessPtr p);
+        ProcessPtr Dequeue();
         bool IsEmpty();
         void PrintQueue();
 };

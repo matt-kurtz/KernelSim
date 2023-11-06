@@ -3,9 +3,9 @@
 #include "queue.h"
 #include "process.h"
 
-void Queue::Enqueue(Process &p) {
+void Queue::Enqueue(ProcessPtr p) {
     QNodePtr q = new QueueNode;
-    q->proc = &p; // this is probably wrong
+    q->proc = p; // this is probably wrong
     q->next = NULL;
 
     if (head == NULL) {
@@ -17,7 +17,7 @@ void Queue::Enqueue(Process &p) {
     }
 }
 
-Process Queue::Dequeue() {
+ProcessPtr Queue::Dequeue() {
     QNodePtr q = head;
     
     if ( head == NULL ) {
@@ -25,7 +25,7 @@ Process Queue::Dequeue() {
     }
     else {
         head = head->next;
-        return *(q->proc);
+        return (q->proc);
     }
 }
 
