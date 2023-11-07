@@ -1,15 +1,11 @@
 CC = g++
 CFLAGS = -ansi -Wall -g
-SRCS = test.cpp queue.cpp process.cpp
-OBJS = $(SRCS:.cpp=.o)
+tgts = test.cpp process.cpp queue.cpp tokenizer.c functions.cpp
 
 all: test
 
-test: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o test
-
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c $<
+test: $(tgts)
+	$(CC) $(CFLAGS) $(tgts) -o test
 
 clean:
-	rm -f test $(OBJS)
+	rm %(tgts)
