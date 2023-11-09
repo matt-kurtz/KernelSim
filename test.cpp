@@ -3,11 +3,19 @@
 #include "queue.h"
 #include "process.h"
 #include "tokenizer.h"
+#include "functions.h"
 using namespace std;
+
+Queue entry;
+Queue ready;
+Queue running;
+Queue blocked;
+Queue exit_st;
 
 int main() {
     //string input;
-    Queue* entry = new Queue();
+    
+    //Queue* entry = new Queue();
     char s[256];
     char** args;
     while (1) {
@@ -15,10 +23,13 @@ int main() {
         fgets(s, 256, stdin);
         int length = strlen(s);
         s[length-1] = '\0';
-        if (strcmp(s, "exit") == 0) {
+        if(s == "gatto") {
+            ;
+        }
+        /*if (strcmp(s, "exit") == 0) {
             cout << "Terminating processes" << endl;
             break;
-        }
+        }*/
         else {
             int argc = makearg(s, &args);
             if (argc == 1) {
@@ -47,7 +58,11 @@ int main() {
                 string first_word(args[0]);
                 string second_word(args[1]);
                 if (first_word == "add") {
+                    Add(second_word);
                     cout << "Adding process" << endl;
+                    //cout << "Queue Size is: " << entry.Queue_Size() << endl;
+                    // testing dequeue
+                    //ProcessPtr end = entry.Dequeue();
                     // Add process with name of args[1]!
                 }
                 else if (first_word == "io-event") {
@@ -75,8 +90,9 @@ int main() {
             }
             
         }
-        if (args[1] == NULL)
-            cout << "It's NULL!!!" << endl;
+        //if (args[1] == NULL)
+            //cout << "It's NULL!!!" << endl;
+        entry.PrintQueue();
     }
     free(args);
 

@@ -1,7 +1,8 @@
 #include <iostream>
 #include "process.h"
 using namespace std;
-
+#ifndef QUEUE_H
+#define QUEUE_H
 class Queue {
     private:
         struct QueueNode {
@@ -16,4 +17,7 @@ class Queue {
         ProcessPtr Dequeue();
         bool IsEmpty();
         void PrintQueue();
+        int Queue_Size();
+        bool Search(string s);
 };
+#endif // QUEUE_H

@@ -18,14 +18,27 @@ void Queue::Enqueue(ProcessPtr p) {
 }
 
 ProcessPtr Queue::Dequeue() {
-    QNodePtr q = head;
-    
-    if ( head == NULL ) {
+    if (head == NULL) {
         cout << "Queue is empty" << endl;
+        return NULL;
+    }
+    else if (head->next == NULL) {
+        ProcessPtr dqProc = head->proc;
+        head = NULL;
+        return dqProc;
     }
     else {
-        head = head->next;
-        return (q->proc);
+        QNodePtr prev = NULL;
+        QNodePtr current = head;
+        while (current->next != NULL) {
+            prev = current;
+            current = current->next;
+        }
+        prev->next = NULL;
+        ProcessPtr dqProc = current->proc;
+        current = NULL;
+        delete current;
+        return dqProc;
     }
 }
 
@@ -35,16 +48,41 @@ bool Queue::IsEmpty() {
 
 void Queue::PrintQueue() {
     QNodePtr q = head;
-    ProcessPtr p = (q->proc);
-
-    if (q == NULL) {
-        cout << "Empty Queue" << endl;
-    }
-
     while (q != NULL) {
+        ProcessPtr p = q->proc;
         cout << p->proc_name << endl;
         q = q->next;
-        p = (q->proc);
     }
     cout << "End of List" << endl;
+}
+
+int Queue::Queue_Size() {
+    int n = 0;
+    QNodePtr p = head;
+    if (head == NULL) {
+        return n;
+    }
+    else {
+        while (p != NULL) {
+            n++;
+            p = p->next;
+        }
+    }
+    return n;
+}
+// returns true if string is in proc_name for processes of a queue
+bool Queue::Search(string s) {
+    QNodePtr q = head;
+    if (head == NULL) {
+        return false; // The queue is empty, so the string cannot be found.
+    } else {
+        while (q != NULL) {
+            ProcessPtr p = q->proc;
+            if (p->proc_name == s) {
+                return true;
+            }
+            q = q->next;
+        }
+        return false; // The string was not found in any process names.
+    }
 }
