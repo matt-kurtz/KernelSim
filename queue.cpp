@@ -130,6 +130,8 @@ void Queue::PrintAllProcs() {
 }
 
 Queue::~Queue() {
-    while (!IsEmpty())
-        Dequeue();
+    while (!IsEmpty()) {
+        ProcessPtr p = Dequeue();
+        delete p;
+    }
 }

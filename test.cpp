@@ -41,14 +41,15 @@ int main() {
                 for (int i = 0; i < argc; i++) {
                     free(args[i]);
                 }
+                free(args);
                 break;
             }
             else if (first_word == "release") {
-                cout << "Release process" << endl;
-                // Query process
+                //cout << "Release process" << endl;
+                // Release process
             }
             else if (first_word == "step") {
-                cout << "Step process" << endl;
+                //cout << "Step process" << endl;
                 Step();
                 // Step process
             }
@@ -137,18 +138,6 @@ int main() {
             //cout << args[i] << endl;
             free(args[i]);
         }
-        /*cout << "Entry Queue" << endl;
-        entry->PrintQueue();
-        cout << "-------" << endl;
-        cout << "Ready Queue" << endl;
-        ready->PrintQueue();
-        cout << "-------" << endl;
-        cout << "Running Queue" << endl;
-        running->PrintQueue();
-        cout << "-------" << endl;
-        cout << "IO Device 0 Queue" << endl;
-        iod_0->PrintQueue();
-        cout << "-------" << endl; */
         free(args);
         
     }
