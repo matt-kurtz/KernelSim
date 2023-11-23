@@ -6,6 +6,7 @@
 using namespace std;
 
 int main() {
+    string s;
     Queue* test = new Queue();
     ProcessPtr p = new Process;
     p->proc_name = "Test";
@@ -22,6 +23,9 @@ int main() {
     }
     else if (test->Search("what's") == false){
         cout << "Name's not present." << endl;
+    }
+    while (s != "exit") {
+        cin >> s;
     }
     delete test;
     return 0;

@@ -25,7 +25,7 @@ void Add(string &name)
         p->proc_name = name;
         p->state = "New";
         //cout << "Process Name: " << p->proc_name << endl << "State: " << p->state << endl;
-        entry->Enqueue(*p);
+        entry->Enqueue(p);
     }
 }
 void Step() {
@@ -44,7 +44,7 @@ void Step() {
         cout << "Process " << "\"" << q->proc_name << "\"" << " moved from " << q->state << " to ";
         q->state = "Ready";
         cout << q->state << endl;
-        ready->Enqueue(*q);
+        ready->Enqueue(q);
     }
     // Advance at most 1 process from each I/O device in the Blocked state into the ready state
     // CHECK TICK REQUIREMENT
@@ -55,7 +55,7 @@ void Step() {
         cout << "Process " << "\"" << p->proc_name << "\"" << " moved from " << p->state << " to ";
         p->state = "Ready";
         cout << p->state << endl;
-        ready->Enqueue(*p);
+        ready->Enqueue(p);
     }
     // If any processes are in the Ready state, dispatch a process to the processor
     // by advancing it from the Ready state to the running state.
@@ -64,7 +64,7 @@ void Step() {
         cout << "Process " << "\"" << p->proc_name << "\"" << " moved from " << p->state << " to ";
         p->state = "Running";
         cout << p->state << endl;
-        running->Enqueue(*p);
+        running->Enqueue(p);
     }
 
 
@@ -78,25 +78,25 @@ void wait(char num) {
                 p = running->Dequeue();
                 p->state = "Blocked";
                 p->device = 0;
-                iod_0->Enqueue(*p);
+                iod_0->Enqueue(p);
                 break;
             case '1':
                 p = running->Dequeue();
                 p->state = "Blocked";
                 p->device = 1;
-                iod_1->Enqueue(*p);
+                iod_1->Enqueue(p);
                 break;
             case '2':
                 p = running->Dequeue();
                 p->state = "Blocked";
                 p->device = 2;
-                iod_2->Enqueue(*p);
+                iod_2->Enqueue(p);
                 break;
             case '3':
                 p = running->Dequeue();
                 p->state = "Blocked";
                 p->device = 3;
-                iod_3->Enqueue(*p);
+                iod_3->Enqueue(p);
                 break;
             default:
                 cout << "Error with wait command. Check second arg" << endl;
@@ -108,7 +108,7 @@ void wait(char num) {
 }
 
 void IOEvent(char num) {
-    ProcessPtr p;
+    ProcessPtr p = NULL;
     switch (num) {
             case '0':
                 if (iod_0->IsEmpty() == true) {
@@ -118,7 +118,7 @@ void IOEvent(char num) {
                     while (iod_0->IsEmpty() != true) {
                         p = iod_0->Dequeue();
                         p->state = "Ready";
-                        ready->Enqueue(*p);
+                        ready->Enqueue(p);
                     }
                 }
                 break;
@@ -130,7 +130,7 @@ void IOEvent(char num) {
                     while (iod_1->IsEmpty() != true) {
                         p = iod_1->Dequeue();
                         p->state = "Ready";
-                        ready->Enqueue(*p);
+                        ready->Enqueue(p);
                     }
                 }
                 break;
@@ -142,7 +142,7 @@ void IOEvent(char num) {
                     while (iod_2->IsEmpty() != true) {
                         p = iod_2->Dequeue();
                         p->state = "Ready";
-                        ready->Enqueue(*p);
+                        ready->Enqueue(p);
                     }
                 }
                 break;
@@ -154,7 +154,7 @@ void IOEvent(char num) {
                     while (iod_3->IsEmpty() != true) {
                         p = iod_3->Dequeue();
                         p->state = "Ready";
-                        ready->Enqueue(*p);
+                        ready->Enqueue(p);
                     }
                 }
                 break;

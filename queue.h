@@ -16,7 +16,8 @@ class Queue {
     public:
         Queue() { head = NULL; }
         ~Queue();
-        void Enqueue(Process &p);
+        void Enqueue(ProcessPtr p);
+        //ProcessPtr Dequeue();
         ProcessPtr Dequeue();
         bool IsEmpty();
         void PrintQueue();

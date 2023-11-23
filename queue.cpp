@@ -3,22 +3,31 @@
 #include "queue.h"
 #include "process.h"
 
-void Queue::Enqueue(Process &p) {
+void Queue::Enqueue(ProcessPtr p) {
     QNodePtr q = new QueueNode;
-    q->proc = &p; // this is probably wrong
+    q->proc = p; // this is probably wrong originally we had &p
     q->next = NULL;
 
-    if (head == NULL) {
+   /* if (head == NULL) {
         head = q;
     }
     else {
         q->next = head;
         head = q;
+    }*/
+    if (head == NULL) {
+        head = q;
+    } else {
+        QNodePtr tmp = head;
+        while (tmp->next != NULL) {
+            tmp = tmp->next;
+        }
+        tmp->next = q;
     }
 }
 
 ProcessPtr Queue::Dequeue() {
-    if (head == NULL) {
+    /*if (head == NULL) {
         cout << "Queue is empty" << endl;
         return NULL;
     }
@@ -39,7 +48,15 @@ ProcessPtr Queue::Dequeue() {
         delete current;
         current = NULL;
         return dqProc;
+    }*/
+    if (IsEmpty()) {
+        return NULL;
     }
+    QNodePtr tmp = head;
+    head = head->next;
+    ProcessPtr dqProc = tmp->proc;
+    delete tmp;
+    return dqProc;
 }
 
 bool Queue::IsEmpty() {
@@ -113,13 +130,6 @@ void Queue::PrintAllProcs() {
 }
 
 Queue::~Queue() {
-    QNodePtr current = head;
-    while (current != NULL) {
-        QNodePtr tmp = current;
-        current = current->next;
-        delete tmp->proc;
-        delete tmp;
-        cout << "Queue node deleted" << endl;
-    }
-    head = NULL;
+    while (!IsEmpty())
+        Dequeue();
 }
