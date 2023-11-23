@@ -6,9 +6,11 @@ using namespace std;
 struct Process {
     string proc_name;
     string state;
+    int device;
 
     //Process(const string& name, const string& st);
     Process() {;}
+    ~Process();
     Process(string& name, string& st);
 };
 typedef Process* ProcessPtr;

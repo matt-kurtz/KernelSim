@@ -38,7 +38,7 @@ int makearg(char *s, char ***args) {
    int words = NumOfWords(s);
    int start = 0;
    int end = 0;
-   int length_of_word = 0;
+   //int length_of_word = 0;
 
    if (LengthOfString(s) > 256) {
       printf("Error, too big of an input.\n");
@@ -94,7 +94,7 @@ int makearg(char *s, char ***args) {
 }
 // Calculates length of a given string
 int LengthOfString(char *s) {
-   int count;
+   int count = 0;
    while (*s != '\0') {
       count++;
       s++;

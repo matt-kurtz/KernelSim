@@ -3,9 +3,9 @@
 #include "queue.h"
 #include "process.h"
 
-void Queue::Enqueue(ProcessPtr p) {
+void Queue::Enqueue(Process &p) {
     QNodePtr q = new QueueNode;
-    q->proc = p; // this is probably wrong
+    q->proc = &p; // this is probably wrong
     q->next = NULL;
 
     if (head == NULL) {
@@ -36,8 +36,8 @@ ProcessPtr Queue::Dequeue() {
         }
         prev->next = NULL;
         ProcessPtr dqProc = current->proc;
-        current = NULL;
         delete current;
+        current = NULL;
         return dqProc;
     }
 }
@@ -85,4 +85,41 @@ bool Queue::Search(string s) {
         }
         return false; // The string was not found in any process names.
     }
+}
+
+ProcessPtr Queue::SearchRetProc(string s) {
+    QNodePtr q = head;
+    while (q != NULL) {
+        ProcessPtr p = q->proc;
+        if (p->proc_name == s) {
+            return p;
+        }
+        q = q->next;
+    }
+    return 0;
+}
+
+void Queue::PrintAllProcs() {
+    QNodePtr q = head;
+    while (q != NULL) {
+        ProcessPtr p = q->proc;
+        cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
+        if (p->state == "Blocked"){
+            cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+        }
+        cout << "***" << endl;
+        q = q->next;
+    }
+}
+
+Queue::~Queue() {
+    QNodePtr current = head;
+    while (current != NULL) {
+        QNodePtr tmp = current;
+        current = current->next;
+        delete tmp->proc;
+        delete tmp;
+        cout << "Queue node deleted" << endl;
+    }
+    head = NULL;
 }

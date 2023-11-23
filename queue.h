@@ -3,6 +3,8 @@
 using namespace std;
 #ifndef QUEUE_H
 #define QUEUE_H
+
+
 class Queue {
     private:
         struct QueueNode {
@@ -13,11 +15,15 @@ class Queue {
         QNodePtr head;
     public:
         Queue() { head = NULL; }
-        void Enqueue(ProcessPtr p);
+        ~Queue();
+        void Enqueue(Process &p);
         ProcessPtr Dequeue();
         bool IsEmpty();
         void PrintQueue();
         int Queue_Size();
         bool Search(string s);
+        ProcessPtr SearchRetProc(string s);
+        void PrintAllProcs();
+
 };
 #endif // QUEUE_H
