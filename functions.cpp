@@ -40,6 +40,7 @@ void Step() {
     while (exit_st->IsEmpty() != true) {
         ProcessPtr p = exit_st->Dequeue();
         cout << "Process " << "\"" << p->proc_name << "\"" << " is banished to the void." << endl; 
+        delete p;
     }
     // Advance at most 1 process in the New State into the ready state.
     if (entry->Queue_Size() >= 1) {
