@@ -7,6 +7,7 @@ struct Process {
     string proc_name;
     string state;
     int device;
+    int tick_count;
 
     //Process(const string& name, const string& st);
     Process() {;}

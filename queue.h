@@ -25,6 +25,7 @@ class Queue {
         bool Search(string s);
         ProcessPtr SearchRetProc(string s);
         void PrintAllProcs();
+        int Peak(); // returns tick count of waiting io-event processes
 
 };
 #endif // QUEUE_H

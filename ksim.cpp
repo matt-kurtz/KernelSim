@@ -22,7 +22,6 @@ using namespace std;
     int tick = 0;
 
 int main() {
-    //string input;
     char s[256];
     char** args;
 
@@ -31,16 +30,11 @@ int main() {
         fgets(s, 256, stdin);
         int length = strlen(s);
         s[length-1] = '\0';
-        /*if (strcmp(s, "exit") == 0) {
-            cout << "Terminating processes" << endl;
-            break;
-        }*/
+
         int argc = makearg(s, &args);
         if (argc == 1) {
             string first_word(args[0]);
             if (first_word == "exit") {
-                //cout << "Terminating processes" << endl;
-                //cout << "We're in the else section!!" << endl;
                 for (int i = 0; i < argc; i++) {
                     free(args[i]);
                 }
@@ -48,14 +42,10 @@ int main() {
                 break;
             }
             else if (first_word == "release") {
-                //cout << "Release process" << endl;
-                // Release process
                 release();
             }
             else if (first_word == "step") {
-                //cout << "Step process" << endl;
                 Step();
-                // Step process
             }
             else if (first_word == "query") {
                 query("", 10);
@@ -78,24 +68,15 @@ int main() {
             string second_word(args[1]);
             if (first_word == "add") {
                 Add(second_word);
-                //cout << "Adding process" << endl;
-                //cout << "Queue Size is: " << entry.Queue_Size() << endl;
-                // testing dequeue
-                //ProcessPtr end = entry.Dequeue();
-                // Add process with name of args[1]!
             }
             else if (first_word == "io-event") {
-                //cout << "IO-Event Process" << endl;
                 if (*args[1] != '0' && *args[1] != '1' && *args[1] != '2' && *args[1] != '3')
                     cout << "Second argument should be in the range [0-3]" << endl;
-                // IO-Event Process with args[1]
                 else { 
                     IOEvent(*args[1]);
                 }    
             }
             else if (first_word == "query") {
-                //cout << "Query Process" << endl;
-                // Query Process with args[1]
                 if (second_word == "all") {
                     query("", 10);
                 }
@@ -134,8 +115,6 @@ int main() {
                 if (*args[1] != '0' && *args[1] != '1' && *args[1] != '2' && *args[1] != '3')
                     cout << "Second argument should be in the range [0-3]" << endl;
                 else {
-                    //cout << "Wait process" << endl;
-                    // Wait process with args[1]
                     wait(*args[1]);
                 }
                 
@@ -145,18 +124,13 @@ int main() {
             }
         }
         else {
-            cout << "Something went wrong..." << endl;
+            cout << "0 args or more than 2 args. Make sure you have 1 and/or 2 args." << endl;
         }
         for (int i = 0; i < argc; i++) {
-            //cout << args[i] << endl;
             free(args[i]);
         }
         free(args);
-        
     }
-    //if (args[1] == NULL)
-        //cout << "It's NULL!!!" << endl;
-    //entry.PrintQueue();
     delete entry;
     delete ready;
     delete running;
@@ -166,7 +140,4 @@ int main() {
     delete iod_1;
     delete iod_2;
     delete iod_3;
-
-//free(args);
-
 }

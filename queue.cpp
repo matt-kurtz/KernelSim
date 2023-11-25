@@ -1,20 +1,14 @@
 #include <iostream>
+#include <iomanip>
 #include <string.h>
 #include "queue.h"
 #include "process.h"
 
 void Queue::Enqueue(ProcessPtr p) {
     QNodePtr q = new QueueNode;
-    q->proc = p; // this is probably wrong originally we had &p
+    q->proc = p;
     q->next = NULL;
 
-   /* if (head == NULL) {
-        head = q;
-    }
-    else {
-        q->next = head;
-        head = q;
-    }*/
     if (head == NULL) {
         head = q;
     } else {
@@ -27,28 +21,6 @@ void Queue::Enqueue(ProcessPtr p) {
 }
 
 ProcessPtr Queue::Dequeue() {
-    /*if (head == NULL) {
-        cout << "Queue is empty" << endl;
-        return NULL;
-    }
-    else if (head->next == NULL) {
-        ProcessPtr dqProc = head->proc;
-        head = NULL;
-        return dqProc;
-    }
-    else {
-        QNodePtr prev = NULL;
-        QNodePtr current = head;
-        while (current->next != NULL) {
-            prev = current;
-            current = current->next;
-        }
-        prev->next = NULL;
-        ProcessPtr dqProc = current->proc;
-        delete current;
-        current = NULL;
-        return dqProc;
-    }*/
     if (IsEmpty()) {
         return NULL;
     }
@@ -91,7 +63,7 @@ int Queue::Queue_Size() {
 bool Queue::Search(string s) {
     QNodePtr q = head;
     if (head == NULL) {
-        return false; // The queue is empty, so the string cannot be found.
+        return false;
     } else {
         while (q != NULL) {
             ProcessPtr p = q->proc;
@@ -100,7 +72,7 @@ bool Queue::Search(string s) {
             }
             q = q->next;
         }
-        return false; // The string was not found in any process names.
+        return false;
     }
 }
 
@@ -122,7 +94,7 @@ void Queue::PrintAllProcs() {
         ProcessPtr p = q->proc;
         cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
         if (p->state == "Blocked"){
-            cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+            cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
         }
         cout << "***" << endl;
         q = q->next;
@@ -133,5 +105,15 @@ Queue::~Queue() {
     while (!IsEmpty()) {
         ProcessPtr p = Dequeue();
         delete p;
+    }
+}
+
+int Queue::Peak() {
+    if (!IsEmpty()) {
+        ProcessPtr p = head->proc;
+        return p->tick_count;
+    }
+    else {
+        return 0;
     }
 }

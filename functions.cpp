@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "process.h"
 #include "queue.h"
 #include "functions.h"
@@ -15,6 +16,8 @@ extern Queue* iod_1;
 extern Queue* iod_2;
 extern Queue* iod_3;
 
+extern int tick;
+
 void Add(string &name)
 {
     if (entry->Search(name) == true || ready->Search(name) == true || running->Search(name) == true || blocked->Search(name) == true || exit_st->Search(name) == true || iod_0->Search(name) == true || iod_1->Search(name) == true || iod_2->Search(name) == true || iod_3->Search(name) == true) {
@@ -24,8 +27,8 @@ void Add(string &name)
         ProcessPtr p = new Process;
         p->proc_name = name;
         p->state = "New";
-        //cout << "Process Name: " << p->proc_name << endl << "State: " << p->state << endl;
         entry->Enqueue(p);
+        tick += 32;
     }
 }
 void Step() {
@@ -36,7 +39,7 @@ void Step() {
     // Remove all processes that are in the exit state.
     while (exit_st->IsEmpty() != true) {
         ProcessPtr p = exit_st->Dequeue();
-        cout << "Process " << "\"" << p->proc_name << "\"" << "is banished to the void." << endl; 
+        cout << "Process " << "\"" << p->proc_name << "\"" << " is banished to the void." << endl; 
     }
     // Advance at most 1 process in the New State into the ready state.
     if (entry->Queue_Size() >= 1) {
@@ -47,7 +50,42 @@ void Step() {
         ready->Enqueue(q);
     }
     // Advance at most 1 process from each I/O device in the Blocked state into the ready state
-    // CHECK TICK REQUIREMENT
+    if (!iod_0->IsEmpty()) {
+        int tickcheck = iod_0->Peak();
+        if (tick - tickcheck >= 1024) {
+            ProcessPtr p = iod_0->Dequeue();
+            p->state = "Ready";
+            cout << "Process " << "\"" << p->proc_name << "\"" << " moved from \"Blocked\" " << "(iodev=" << p->device << ") to " << p->state << "." << endl;
+            ready->Enqueue(p);
+        }
+    }
+    if (!iod_1->IsEmpty()) {
+        int tickcheck = iod_1->Peak();
+        if (tick - tickcheck >= 1024) {
+            ProcessPtr p = iod_1->Dequeue();
+            p->state = "Ready";
+            cout << "Process " << "\"" << p->proc_name << "\"" << " moved from \"Blocked\" " << "(iodev=" << p->device << ") to " << p->state << "." << endl;
+            ready->Enqueue(p);
+        }
+    }
+    if (!iod_2->IsEmpty()) {
+        int tickcheck = iod_2->Peak();
+        if (tick - tickcheck >= 1024) {
+            ProcessPtr p = iod_2->Dequeue();
+            p->state = "Ready";
+            cout << "Process " << "\"" << p->proc_name << "\"" << " moved from \"Blocked\" " << "(iodev=" << p->device << ") to " << p->state << "." << endl;
+            ready->Enqueue(p);
+        }
+    }
+    if (!iod_3->IsEmpty()) {
+        int tickcheck = iod_3->Peak();
+        if (tick - tickcheck >= 1024) {
+            ProcessPtr p = iod_3->Dequeue();
+            p->state = "Ready";
+            cout << "Process " << "\"" << p->proc_name << "\"" << " moved from \"Blocked\" " << "(iodev=" << p->device << ") to " << p->state << "." << endl;
+            ready->Enqueue(p);
+        }
+    }
 
     // Remove Process from Running State and put into Ready
     if (running->IsEmpty() == false) {
@@ -65,6 +103,7 @@ void Step() {
         p->state = "Running";
         cout << p->state << endl;
         running->Enqueue(p);
+        tick += 256;
     }
 
 
@@ -73,34 +112,40 @@ void Step() {
 void wait(char num) {
     ProcessPtr p;
     if (running->IsEmpty() == false) {
+        int temp_tick = tick;
         switch (num) {
             case '0':
                 p = running->Dequeue();
                 p->state = "Blocked";
                 p->device = 0;
+                p->tick_count = temp_tick;
                 iod_0->Enqueue(p);
                 break;
             case '1':
                 p = running->Dequeue();
                 p->state = "Blocked";
                 p->device = 1;
+                p->tick_count = temp_tick;
                 iod_1->Enqueue(p);
                 break;
             case '2':
                 p = running->Dequeue();
                 p->state = "Blocked";
                 p->device = 2;
+                p->tick_count = temp_tick;
                 iod_2->Enqueue(p);
                 break;
             case '3':
                 p = running->Dequeue();
                 p->state = "Blocked";
                 p->device = 3;
+                p->tick_count = temp_tick;
                 iod_3->Enqueue(p);
                 break;
             default:
                 cout << "Error with wait command. Check second arg" << endl;
         }
+        tick += 1;
     }
     else {
         cout << "No processes running" << endl;
@@ -110,57 +155,65 @@ void wait(char num) {
 void IOEvent(char num) {
     ProcessPtr p = NULL;
     switch (num) {
-            case '0':
-                if (iod_0->IsEmpty() == true) {
-                    cout << "No processes waiting on device 0." << endl;
-                }
-                else {
-                    while (iod_0->IsEmpty() != true) {
-                        p = iod_0->Dequeue();
-                        p->state = "Ready";
-                        ready->Enqueue(p);
-                    }
-                }
-                break;
-            case '1':
-                if (iod_1->IsEmpty() == true) {
-                    cout << "No processes waiting on device 1." << endl;
-                }
-                else {
-                    while (iod_1->IsEmpty() != true) {
-                        p = iod_1->Dequeue();
-                        p->state = "Ready";
-                        ready->Enqueue(p);
-                    }
-                }
-                break;
-            case '2':
-                if (iod_2->IsEmpty() == true) {
-                    cout << "No processes waiting on device 2." << endl;
-                }
-                else {
-                    while (iod_2->IsEmpty() != true) {
-                        p = iod_2->Dequeue();
-                        p->state = "Ready";
-                        ready->Enqueue(p);
-                    }
-                }
-                break;
-            case '3':
-                if (iod_3->IsEmpty() == true) {
-                    cout << "No processes waiting on device 3." << endl;
-                }
-                else {
-                    while (iod_3->IsEmpty() != true) {
-                        p = iod_3->Dequeue();
-                        p->state = "Ready";
-                        ready->Enqueue(p);
-                    }
-                }
-                break;
-            default:
-                cout << "Error with IO-event command. Check second arg" << endl;
+        case '0':
+            if (iod_0->IsEmpty() == true) {
+                cout << "No processes waiting on device 0." << endl;
             }
+            else {
+                while (iod_0->IsEmpty() != true) {
+                    p = iod_0->Dequeue();
+                    p->state = "Ready";
+                    cout << "Process " << "\"" << p->proc_name << "\"" << " moved from \"Blocked\" " << "(iodev=" << p->device << ") to " << p->state << "." << endl;
+                    ready->Enqueue(p);
+                    tick += 1;
+                }
+            }
+            break;
+        case '1':
+            if (iod_1->IsEmpty() == true) {
+                cout << "No processes waiting on device 1." << endl;
+            }
+            else {
+                while (iod_1->IsEmpty() != true) {
+                    p = iod_1->Dequeue();
+                    p->state = "Ready";
+                    cout << "Process " << "\"" << p->proc_name << "\"" << " moved from \"Blocked\" " << "(iodev=" << p->device << ") to " << p->state << "." << endl;
+                    ready->Enqueue(p);
+                    tick += 1;
+                }
+            }
+            break;
+        case '2':
+            if (iod_2->IsEmpty() == true) {
+                cout << "No processes waiting on device 2." << endl;
+            }
+            else {
+                while (iod_2->IsEmpty() != true) {
+                    p = iod_2->Dequeue();
+                    p->state = "Ready";
+                    cout << "Process " << "\"" << p->proc_name << "\"" << " moved from \"Blocked\" " << "(iodev=" << p->device << ") to " << p->state << "." << endl;
+                    ready->Enqueue(p);
+                    tick += 1;
+                }
+            }
+            break;
+        case '3':
+            if (iod_3->IsEmpty() == true) {
+                cout << "No processes waiting on device 3." << endl;
+            }
+            else {
+                while (iod_3->IsEmpty() != true) {
+                    p = iod_3->Dequeue();
+                    p->state = "Ready";
+                    cout << "Process " << "\"" << p->proc_name << "\"" << " moved from \"Blocked\" " << "(iodev=" << p->device << ") to " << p->state << "." << endl;
+                    ready->Enqueue(p);
+                    tick += 1;
+                }
+            }
+            break;
+        default:
+            cout << "Error with IO-event command. Check second arg" << endl;
+    }
 }
 
 void query(string id, int queue_num) {
@@ -170,7 +223,7 @@ void query(string id, int queue_num) {
             p = entry->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
             break;
@@ -178,7 +231,7 @@ void query(string id, int queue_num) {
             p = ready->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
             break;
@@ -186,7 +239,7 @@ void query(string id, int queue_num) {
             p = running->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
             break;
@@ -194,7 +247,7 @@ void query(string id, int queue_num) {
             p = blocked->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
             break;
@@ -202,7 +255,7 @@ void query(string id, int queue_num) {
             p = exit_st->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
             break;
@@ -210,7 +263,7 @@ void query(string id, int queue_num) {
             p = iod_0->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
             break;
@@ -218,7 +271,7 @@ void query(string id, int queue_num) {
             p = iod_1->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
             break;
@@ -226,14 +279,14 @@ void query(string id, int queue_num) {
             p = iod_2->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
         case 9:
             p = iod_3->SearchRetProc(id);
             cout << "***" << endl << "    id: " << "\"" << p->proc_name << "\"" << endl << "    state: " << "\"" << p->state << "\"" << endl;
             if (p->state == "Blocked"){
-                cout << "       waiting on device " << p->device << " since tick " << /* add tick num here << */ endl;
+                cout << "       waiting on device " << p->device << " since tick " << setw(9) << setfill('0') << p->tick_count << endl;
             }
             cout << "***" << endl;
             break;
@@ -251,5 +304,19 @@ void query(string id, int queue_num) {
         default:
             cout << "Error..." << endl;
             break;
+    }
+}
+
+void release() {
+    ProcessPtr p;
+    if (!running->IsEmpty()) {
+        p = running->Dequeue();
+        p->state = "Exit";
+        cout << "Process " << "\"" << p->proc_name << "\"" << " moved from Running to Exit." << endl;
+        exit_st->Enqueue(p);
+        tick += 32;
+    }
+    else {
+        cout << "No process is currently Running." << endl;
     }
 }

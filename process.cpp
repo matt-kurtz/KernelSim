@@ -8,5 +8,5 @@ Process::Process(string& name, string& st) : proc_name(name), state(st) {
 }
 
 Process::~Process() {
-    cout << "Process " << proc_name << " destroyed." << endl;
+    //cout << "Process " << proc_name << " destroyed." << endl;
 }
